@@ -14,7 +14,10 @@ import { formatPrice } from "../../utils/context";
 // }
 
 export const Orders = () => {
-    const { orders } = useContext(CoffeeContext);
+    const {
+        coffeeState: { orders },
+    } = useContext(CoffeeContext);
+    console.log(orders);
     return (
         <div>
             {Object.keys(orders).map((employee) => {

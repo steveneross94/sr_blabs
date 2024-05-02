@@ -1,13 +1,20 @@
-import { CalculatePayer } from "./CalculatePayer";
+import { useState } from "react";
+import { Button } from "./Button";
 import { CycleTotals } from "./CycleTotals";
 import { Menu } from "./Menu";
 import { Orders } from "./Orders";
 
+const Heading = ({ text }) => {
+    return <p className="font-bold">{text}</p>;
+};
+
 export const PaymentCalculator = () => {
+    const [lastPaid, setLastPaid] = useState({});
+    const [paymentOrder, setPaymentOrder] = useState({});
+    const [totalCost, setTotalCost] = useState(0);
+
     const labelStyles = "items-start md:items-center";
-    const Heading = ({ text }) => {
-        return <p className="font-bold">{text}</p>;
-    };
+
     return (
         <>
             <div className="md:grid md:grid-cols-5 pt-6 gap-4 min-h-96 flex flex-col justify-evenly w-full">
@@ -24,7 +31,10 @@ export const PaymentCalculator = () => {
                     <CycleTotals />
                 </div>
             </div>
-            <CalculatePayer />
+            <div className="inline-flex w-full p-6">
+                <Button label={"Calculate Payer"} action={() => {}} />
+                <Button label={"End Cycle"} action={() => {}} />
+            </div>
         </>
     );
 };

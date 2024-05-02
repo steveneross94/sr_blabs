@@ -4,17 +4,21 @@ import { formatPrice } from "../../utils/context";
 import { data } from "../../data";
 
 export const Menu = () => {
-    const { orders, setOrders } = useContext(CoffeeContext);
-    console.log(orders);
+    const {
+        coffeeState: { orders },
+        setCoffeeState,
+    } = useContext(CoffeeContext);
 
     const handleChange = ({ e, user }) => {
         const data = JSON.parse(e.target.value);
         const { name, price } = data;
-        setOrders({
-            ...orders,
-            [user.name]: {
-                coffee: name,
-                price,
+        setCoffeeState({
+            orders: {
+                ...orders,
+                [user.name]: {
+                    coffee: name,
+                    price,
+                },
             },
         });
     };
