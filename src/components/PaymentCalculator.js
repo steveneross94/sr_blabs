@@ -1,28 +1,83 @@
-import { useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { Button } from "./Button";
 import { CycleTotals } from "./CycleTotals";
 import { Menu } from "./Menu";
 import { Orders } from "./Orders";
+import { CoffeeContext } from "@/context/CoffeeContext";
+import { formatPrice } from "../../utils/context";
 
 const Heading = ({ text }) => {
     return <p className="font-bold">{text}</p>;
 };
 
+//TODO: check most expensive order list against previous employees who have paid
+// if no employees have paid from that list, randomize result
+
 export const PaymentCalculator = () => {
-    const [lastPaid, setLastPaid] = useState({});
-    const [paymentOrder, setPaymentOrder] = useState({});
+    const [lastPaid, setLastPaid] = useState([]);
     const [totalCost, setTotalCost] = useState(0);
+    const [averageCost, setAverageCost] = useState(0);
+    const [mostExpensiveOrders, setMostExpensiveOrders] = useState("");
+    const [rouletteWinner, setRouletteWinner] = useState("");
+    const {
+        coffeeState: { orders },
+    } = useContext(CoffeeContext);
+
+    useEffect(() => {
+        const total = Object.values(orders).reduce(
+            (acc, curr) => acc + curr.price,
+            0
+        );
+        const numEmployees = Object.keys(orders).length;
+        const average = total / numEmployees;
+
+        const highestPricedOrders = calculateMostExpensiveOrder({
+            orders,
+            average,
+        });
+        setMostExpensiveOrders(highestPricedOrders);
+        setTotalCost(formatPrice(total));
+        setAverageCost(formatPrice(average));
+    }, [orders]);
+
+    const calculateMostExpensiveOrder = ({ orders, average }) => {
+        let mostExpensiveList = [];
+        let highestPriceInList = 0;
+
+        for (const employee in orders) {
+            if (orders[employee].price > average) {
+                mostExpensiveList.push({
+                    name: employee,
+                    order: orders[employee],
+                });
+            }
+        }
+
+        mostExpensiveList.forEach((el) => {
+            if (el.order.price > highestPriceInList) {
+                highestPriceInList = el.order.price;
+            }
+        });
+
+        return mostExpensiveList.filter(
+            (employee) => employee.order.price >= highestPriceInList
+        );
+    };
 
     const labelStyles = "items-start md:items-center";
 
     return (
         <>
-            <div className="md:grid md:grid-cols-5 pt-6 gap-4 min-h-96 flex flex-col justify-evenly w-full">
-                <div className={`md:col-span-3 min-h-60 ${labelStyles}`}>
+            <div className="flex flex-col md:flex-row justify-evenly pt-6 gap-4 min-h-96 w-full">
+                <div className={`flex flex-col min-h-60 ${labelStyles}`}>
                     <Heading text={"Coffees"} />
                     <Orders />
+                    <div className="inline-flex gap-2 pt-4">
+                        <p className="font-bold">Order Total:</p>
+                        <p>{totalCost}</p>
+                    </div>
                 </div>
-                <div className={`flex flex-col md:col-span-2 ${labelStyles}`}>
+                <div className={`flex flex-col ${labelStyles}`}>
                     <Heading text={"Menu"} />
                     <Menu />
                 </div>
@@ -38,26 +93,3 @@ export const PaymentCalculator = () => {
         </>
     );
 };
-
-// 1. Initialization:
-//    - Create a dictionary to keep track of each coworker's total payments.
-//    - Create a list of coworkers, including Bob, Jeremy, and the others.
-//    - Assign prices to each type of coffee they like.
-//    - Initialize the last payer variable to None.
-//    - Initialize a variable to keep track of the order of payments.
-
-// 2. Calculate Total Cost:
-//    - Iterate through the list of coworkers.
-//    - For each coworker, check the price of their favorite coffee and sum it up to get the total cost.
-
-// 3. Decide Who Pays:
-//    - Iterate through the list of coworkers.
-//    - Subtract the price of the drink from each person's running total.
-//    - Determine the coworker with the lowest total, indicating they are most in debt to the group.
-//    - If everyone has paid once in the current cycle, reset the order of payments and update the last payer.
-
-// 4. Update Payment History:
-//    - Add the total amount of all the drinks for that order to the payer's running total.
-
-// 5. Return Payment Decision:
-//    - Output the name of the coworker who will pay for the coffee.

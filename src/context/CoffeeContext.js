@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 
-const initialState = {
+const initialContext = {
     orders: {
         Bob: { coffee: "cappucino", price: 3.5 },
         Jeremy: {
@@ -33,24 +33,17 @@ const initialState = {
 
 export const CoffeeContext = createContext();
 
-//Persist to localStorage
 export const CoffeeProvider = ({ children }) => {
+    const initialState =
+        typeof window !== "undefined" && localStorage.getItem("coffeeState")
+            ? JSON.parse(localStorage.getItem("coffeeState"))
+            : initialContext;
+
     const [coffeeState, setCoffeeState] = useState(initialState);
 
-    // useEffect(() => {
-    //     // Set local storage on mount
-    //     if (typeof window !== undefined) {
-    //         const localStorageCheck = localStorage.getItem("coffeeState");
-    //         const localStorageState = localStorageCheck
-    //             ? JSON.parse(localStorageCheck)
-    //             : initialState;
-    //         localStorage.setItem(
-    //             "coffeeState",
-    //             JSON.stringify(localStorageState)
-    //         );
-    //         setCoffeeState(localStorageState);
-    //     }
-    // }, []);
+    useEffect(() => {
+        localStorage.setItem("coffeeState", JSON.stringify(coffeeState));
+    }, [coffeeState]);
 
     return (
         <CoffeeContext.Provider value={{ coffeeState, setCoffeeState }}>

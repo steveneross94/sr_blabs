@@ -1,5 +1,5 @@
 import { CoffeeContext } from "@/context/CoffeeContext";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { formatPrice } from "../../utils/context";
 
 // {
@@ -17,11 +17,19 @@ export const Orders = () => {
     const {
         coffeeState: { orders },
     } = useContext(CoffeeContext);
-    console.log(orders);
+    const [orderList, setOrderList] = useState({});
+
+    // NextJS quirk
+    // Since I'm using local storage to persist state across refresh
+    // this pattern is required to avoid hydration errors
+    useEffect(() => {
+        setOrderList(orders);
+    }, [orders]);
+
     return (
         <div>
-            {Object.keys(orders).map((employee) => {
-                const { coffee, price } = orders[employee];
+            {Object.keys(orderList).map((employee) => {
+                const { coffee, price } = orderList[employee];
                 return (
                     <div key={employee} className="flex flex-row gap-2">
                         <p>{employee}</p>
