@@ -16,7 +16,6 @@ const Heading = ({ text }) => {
 export const PaymentCalculator = () => {
     const [lastPaid, setLastPaid] = useState([]);
     const [totalCost, setTotalCost] = useState(0);
-    const [averageCost, setAverageCost] = useState(0);
     const [mostExpensiveOrders, setMostExpensiveOrders] = useState("");
     const [rouletteWinner, setRouletteWinner] = useState("");
     const {
@@ -37,7 +36,6 @@ export const PaymentCalculator = () => {
         });
         setMostExpensiveOrders(highestPricedOrders);
         setTotalCost(formatPrice(total));
-        setAverageCost(formatPrice(average));
     }, [orders]);
 
     const calculateMostExpensiveOrder = ({ orders, average }) => {
