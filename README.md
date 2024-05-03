@@ -1,40 +1,31 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Coffee Credit Card Roulette
 
-## Getting Started
+## Hosted Site
 
-First, run the development server:
+This application is currently hosted on [netlify](https://main--sr-blabs-preview.netlify.app/) but can run locally using the instructions below. Styled mobile-first, this is meant to be accessed on your phone, though it is responsive enough to be used on a larger screen.
+
+## Getting Started Locally
+
+First, install relevant dependencies:
+
+```bash
+npm install
+```
+
+Then, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+## Assumptions & Notes
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+As an avid San Francisco 49ers fan (and to avoid alienating any employees that were not explicitly mentioned), the names here are a few current players on the team. All of the users start with their favorite coffees pre-selected, so there's no data to populate outside of what is already there. Users can select an alternative option from the dropdowns in the Menu section, as well.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+At the start, we look at the average cost of all of the orders and check that against the most expensive orders in the list. Theoretically, the user(s) with the most expensive order will be higher than the average, and therefore will be required to pay for the order. In the event that there is more than 1 user with the most expensive order (i.e. 2 or more users have ordered a frappucino for $4), then we'll pick one of the users at random in that scenario - leaving it up to fate.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Once a user has paid during a current cycle they are removed from the roulette pool. This will ultimately bring the average cost higher, and when that cost exceeds the most expensive drink on the menu, we check the user's order against the lowest cost item on the menu to collect the pool of the most expensive orders.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+We look at each wave of orders as cycles. A cycle will completely once all users have paid for an order once, and then the slate is wiped clean.

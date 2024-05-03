@@ -1,5 +1,7 @@
 import { PaymentCalculator } from "@/components/PaymentCalculator";
 
+// Design Note: `bg-wrinkled` is a custom background image class to give the application a receipt-like feel. Simple design for a funtionally simple app.
+
 export default function Home() {
     return (
         <main className="flex min-h-screen flex-col items-center p-6 bg-wrinkled bg-cover">
