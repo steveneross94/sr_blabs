@@ -5,10 +5,12 @@ export const useOrderList = () => {
     const {
         coffeeState: { orders },
     } = useContext(CoffeeContext);
+
     const [orderList, setOrderList] = useState({});
 
     useEffect(() => {
         setOrderList(orders);
     }, [orders]);
+
     return orderList;
 };

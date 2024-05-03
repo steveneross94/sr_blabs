@@ -58,9 +58,9 @@ export const PaymentCalculator = () => {
             }
         }
 
-        mostExpensiveList.forEach((el) => {
-            if (el.order.price > highestPriceInList) {
-                highestPriceInList = el.order.price;
+        mostExpensiveList.forEach((listItem) => {
+            if (listItem.order.price > highestPriceInList) {
+                highestPriceInList = listItem.order.price;
             }
         });
 
@@ -99,8 +99,6 @@ export const PaymentCalculator = () => {
     const handleEndCycle = () => {
         setCoffeeState(initialContext);
     };
-
-    console.log({ mostExpensiveOrders, orders });
 
     return (
         <div className="flex flex-col items-center">

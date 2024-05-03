@@ -12,18 +12,21 @@ export const CycleTotals = () => {
 
     return (
         <div className="flex flex-col">
-            {data.employees.map((em, index) => {
+            {data.employees.map((employee, index) => {
                 return (
                     <div
                         key={index}
                         className="inline-flex w-full justify-between"
                     >
                         <p className="font-semibold">
-                            {em.name} {orderList[em.name]?.hasPaid && "*"}
+                            {employee.name}{" "}
+                            {orderList[employee.name]?.hasPaid && "*"}
                         </p>
                         <p>
                             {orderList &&
-                                formatPrice(orderList[em.name]?.cycleTotal)}
+                                formatPrice(
+                                    orderList[employee.name]?.cycleTotal
+                                )}
                         </p>
                     </div>
                 );
