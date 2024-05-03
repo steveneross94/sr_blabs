@@ -28,4 +28,4 @@ At the start, we look at the average cost of all of the orders and check that ag
 
 Once a user has paid during a current cycle they are removed from the roulette pool. This will ultimately bring the average cost higher, and when that cost exceeds the most expensive drink on the menu, we check the user's order against the lowest cost item on the menu to collect the pool of the most expensive orders.
 
-We look at each wave of orders as cycles. A cycle will completely once all users have paid for an order once, and then the slate is wiped clean.
+We look at each wave of orders as cycles. A cycle will complete once all users have paid for an order once, and then the slate is wiped clean.
