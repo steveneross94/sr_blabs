@@ -1,29 +1,28 @@
 import { useContext, useState, useEffect } from "react";
 import { Button } from "./Button";
-import { CycleTotals } from "./CycleTotals";
 import { Menu } from "./Menu";
 import { Orders } from "./Orders";
-import { CoffeeContext } from "@/context/CoffeeContext";
+import { CoffeeContext, initialContext } from "@/context/CoffeeContext";
 import { formatPrice } from "../../utils/context";
 
 const Heading = ({ text }) => {
-    return <p className="font-bold">{text}</p>;
+    return (
+        <p className="font-bold text-2xl border-b border-black w-full text-left">
+            {text}
+        </p>
+    );
 };
 
-//TODO: check most expensive order list against previous employees who have paid
-// if no employees have paid from that list, randomize result
-
 export const PaymentCalculator = () => {
-    const [lastPaid, setLastPaid] = useState([]);
     const [totalCost, setTotalCost] = useState(0);
-    const [mostExpensiveOrders, setMostExpensiveOrders] = useState("");
-    const [rouletteWinner, setRouletteWinner] = useState("");
+    const [mostExpensiveOrders, setMostExpensiveOrders] = useState([]);
     const {
         coffeeState: { orders },
+        setCoffeeState,
     } = useContext(CoffeeContext);
 
     useEffect(() => {
-        const total = Object.values(orders).reduce(
+        const total = Object.values(orders)?.reduce(
             (acc, curr) => acc + curr.price,
             0
         );
@@ -38,12 +37,20 @@ export const PaymentCalculator = () => {
         setTotalCost(formatPrice(total));
     }, [orders]);
 
+    const menuStyles = "items-start md:items-center md:w-full";
+
+    const MIN_ORDER_PRICE = 2;
+
     const calculateMostExpensiveOrder = ({ orders, average }) => {
         let mostExpensiveList = [];
         let highestPriceInList = 0;
 
         for (const employee in orders) {
-            if (orders[employee].price > average) {
+            if (
+                (orders[employee].price > average ||
+                    orders[employee].price >= MIN_ORDER_PRICE) &&
+                !orders[employee].hasPaid
+            ) {
                 mostExpensiveList.push({
                     name: employee,
                     order: orders[employee],
@@ -62,12 +69,43 @@ export const PaymentCalculator = () => {
         );
     };
 
-    const labelStyles = "items-start md:items-center";
+    const handleCalculatePayer = () => {
+        if (mostExpensiveOrders.length === 0) return handleEndCycle();
+
+        if (mostExpensiveOrders.length > 1) {
+            handleRouletteWinner({
+                winner: mostExpensiveOrders[
+                    Math.floor(Math.random() * mostExpensiveOrders.length)
+                ],
+            });
+        } else {
+            handleRouletteWinner({ winner: mostExpensiveOrders[0] });
+        }
+    };
+
+    const handleRouletteWinner = ({ winner }) => {
+        const { name } = winner;
+        setCoffeeState({
+            orders: {
+                ...orders,
+                [name]: {
+                    ...orders[name],
+                    hasPaid: true,
+                },
+            },
+        });
+    };
+
+    const handleEndCycle = () => {
+        setCoffeeState(initialContext);
+    };
+
+    console.log({ mostExpensiveOrders, orders });
 
     return (
-        <>
-            <div className="flex flex-col md:flex-row justify-evenly pt-6 gap-4 min-h-96 w-full">
-                <div className={`flex flex-col min-h-60 ${labelStyles}`}>
+        <div className="flex flex-col items-center">
+            <div className="flex flex-col md:flex-row justify-between pt-6 gap-4 md:gap-10 min-h-96 w-full">
+                <div className={`flex flex-col min-h-60 ${menuStyles}`}>
                     <Heading text={"Coffees"} />
                     <Orders />
                     <div className="inline-flex gap-2 pt-4">
@@ -75,19 +113,21 @@ export const PaymentCalculator = () => {
                         <p>{totalCost}</p>
                     </div>
                 </div>
-                <div className={`flex flex-col ${labelStyles}`}>
+                <div className={`flex flex-col ${menuStyles}`}>
                     <Heading text={"Menu"} />
                     <Menu />
                 </div>
-                <div>
-                    <Heading text={"Cycle Totals"} />
-                    <CycleTotals />
-                </div>
             </div>
-            <div className="inline-flex w-full p-6">
-                <Button label={"Calculate Payer"} action={() => {}} />
-                <Button label={"End Cycle"} action={() => {}} />
+            <div className="inline-flex py-6 gap-2 justify-center  md:max-w-md">
+                <Button
+                    label={"Calculate Payer"}
+                    action={handleCalculatePayer}
+                />
+                <Button label={"End Cycle"} action={handleEndCycle} />
             </div>
-        </>
+            <p className="text-center">
+                <strong>*</strong> indicates employee has paid this cycle
+            </p>
+        </div>
     );
 };

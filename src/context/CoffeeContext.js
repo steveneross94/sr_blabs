@@ -1,30 +1,42 @@
 import { createContext, useEffect, useState } from "react";
 
-const initialContext = {
+export const initialContext = {
     orders: {
-        Bob: { coffee: "cappucino", price: 3.5 },
+        Bob: { coffee: "cappucino", hasPaid: false, cycleTotal: 0, price: 3.5 },
         Jeremy: {
             coffee: "black coffee",
+            hasPaid: false,
+            cycleTotal: 0,
             price: 2,
         },
         Steve: {
             coffee: "cold brew",
+            hasPaid: false,
+            cycleTotal: 0,
             price: 3,
         },
         Brock: {
             coffee: "cortado",
+            hasPaid: false,
+            cycleTotal: 0,
             price: 3.75,
         },
         Brandon: {
             coffee: "frappucino",
+            hasPaid: false,
+            cycleTotal: 0,
             price: 4,
         },
         George: {
             coffee: "espresso",
+            hasPaid: false,
+            cycleTotal: 0,
             price: 2.5,
         },
         Christian: {
             coffee: "latte",
+            hasPaid: false,
+            cycleTotal: 0,
             price: 3.5,
         },
     },

@@ -12,12 +12,15 @@ export const Menu = () => {
     const handleChange = ({ e, user }) => {
         const data = JSON.parse(e.target.value);
         const { name, price } = data;
+        const { cycleTotal, hasPaid } = orders[user.name];
         setCoffeeState({
             orders: {
                 ...orders,
                 [user.name]: {
                     coffee: name,
                     price,
+                    cycleTotal,
+                    hasPaid,
                 },
             },
         });
@@ -29,20 +32,20 @@ export const Menu = () => {
                     (coffee) => coffee.name === user.preferredCoffee
                 );
                 return (
-                    <div key={index} className="flex flex-row justify-between">
-                        <p>{user.name}</p>
+                    <div
+                        key={index}
+                        className="flex flex-row justify-between py-2"
+                    >
+                        <p className="font-semibold">{user.name}</p>
                         <select
                             defaultValue={JSON.stringify(preferred)}
                             onChange={(e) => handleChange({ e, user })}
+                            className="bg-inherit rounded border border-black shadow-lg text-right px-2"
                         >
                             {data.coffee.map((data, index) => {
                                 const value = JSON.stringify(data);
                                 return (
-                                    <option
-                                        key={index}
-                                        className="text-center"
-                                        value={value}
-                                    >
+                                    <option key={index} value={value}>
                                         {data.name} - {formatPrice(data.price)}
                                     </option>
                                 );
@@ -54,5 +57,3 @@ export const Menu = () => {
         </div>
     );
 };
-
-// Users: Bob (cappucino), Jeremy (black coffee), + 5
